@@ -20,21 +20,30 @@ main:
 	beqz $t2, end
 	
 loop:
-	blt $t2, 'a', delete				#check if first lesser than second then go to label "del"
-	bgt $t2, 'z', delete	
+	blt $t2, 'A', delete				
+	bgt $t2, 'z', delete
+	addi $t0, $t0, 1
+	la $t1, ($t0)
+	lb $t2, ($t0)
+	beqz $t2, end
+	bnez $t2, loop
+	
+after_deleting:
+	blt $t2, 'A', delete
+	bgt $t2, 'z', delete #tutaj przechodzimy do kolejnej literki
 	sb $t2, ($t1)
 	sb $zero, ($t0)
 	addi $t1, $t1, 1
 	addi $t0, $t0, 1
 	lb $t2, ($t0)
-	bnez $t2, loop
+	bnez $t2, after_deleting
 	beqz $t2, end
 
 delete:
 	sb $zero, ($t0)
 	addi $t0, $t0, 1
 	lb $t2, ($t0)
-	bnez $t2, loop
+	bnez $t2, after_deleting
 	
 end:
 	li $v0, 4
@@ -47,4 +56,3 @@ end:
 	
 	li $v0, 10
 	syscall
-	
